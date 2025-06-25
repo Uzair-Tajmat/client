@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dashboard</h1>
+      <div id="user-info"></div>
+
+      <h2>Status</h2>
+      <select id="status-select">
+        <option value="free">Free</option>
+        <option value="occupied">Occupied</option>
+      </select>
+      <button onclick="updateStatus()">Update Status</button>
+
+      <h2>Recent Calls</h2>
+      <ul id="call-list"></ul>
+
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      loadDashboard();
+    </script>
+  </body>
+</html>
