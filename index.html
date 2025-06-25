@@ -2,56 +2,672 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Delivery Login/Register</title>
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 40px 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b,
+          #ffd93d,
+          #6bcf7f,
+          #4d96ff,
+          #9c88ff
+        );
+        background-size: 300% 100%;
+        animation: gradient 3s ease infinite;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      h1 {
+        text-align: center;
+        color: #2d3748;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #718096;
+        font-size: 0.95rem;
+        margin-bottom: 32px;
+      }
+
+      #form-toggle {
+        display: flex;
+        background: #f7fafc;
+        border-radius: 16px;
+        padding: 4px;
+        margin-bottom: 32px;
+        position: relative;
+      }
+
+      #form-toggle button {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        background: transparent;
+        color: #718096;
+        font-weight: 500;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      #form-toggle button.active {
+        color: white;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      form {
+        display: none;
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      form.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        color: #2d3748;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .input-group {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fff;
+        color: #2d3748;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+      }
+
+      input::placeholder {
+        color: #a0aec0;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .submit-btn:hover::before {
+        left: 100%;
+      }
+
+      #message {
+        margin-top: 20px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+        display: none;
+      }
+
+      .message.success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+        display: block;
+      }
+
+      .message.error {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+        display: block;
+      }
+
+      .message.info {
+        background: linear-gradient(135deg, #4299e1, #3182ce);
+        color: white;
+        display: block;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .container {
+          padding: 30px 20px;
+          border-radius: 20px;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        #form-toggle button {
+          padding: 10px 16px;
+          font-size: 0.9rem;
+        }
+
+        input,
+        .submit-btn {
+          padding: 14px 16px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .container {
+          padding: 25px 15px;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+        }
+      }
+
+      /* Loading animation for buttons */
+      .loading {
+        position: relative;
+        color: transparent !important;
+      }
+
+      .loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Floating elements for visual appeal */
+      .floating-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .floating-elements::before,
+      .floating-elements::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .floating-elements::before {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        right: 10%;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .floating-elements::after {
+        width: 150px;
+        height: 150px;
+        bottom: 10%;
+        left: 10%;
+        animation: float 8s ease-in-out infinite reverse;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+    </style>
   </head>
   <body>
+    <div class="floating-elements"></div>
+
     <div class="container">
-      <h1>Delivery App</h1>
+      <h1>QuickDeliver</h1>
+      <p class="subtitle">Your food, delivered fast</p>
+
       <div id="form-toggle">
-        <button onclick="showLogin()">Login</button>
-        <button onclick="showRegister()">Register</button>
+        <button id="login-toggle" class="active" onclick="showLogin()">
+          Login
+        </button>
+        <button id="register-toggle" onclick="showRegister()">Register</button>
       </div>
 
-      <form id="login-form">
-        <h2>Login</h2>
-        <input
-          type="text"
-          id="login-phone"
-          placeholder="Phone (+91XXXXXXXXXX)"
-          required
-        />
-        <input
-          type="password"
-          id="login-password"
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Login</button>
+      <form id="login-form" class="active">
+        <h2>Welcome Back</h2>
+        <div class="input-group">
+          <input
+            type="tel"
+            id="login-phone"
+            placeholder="Phone (+91XXXXXXXXXX)"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <button type="submit" class="submit-btn">Sign In</button>
       </form>
 
-      <form id="register-form" style="display: none">
-        <h2>Register</h2>
-        <input type="text" id="reg-name" placeholder="Name" required />
-        <input
-          type="text"
-          id="reg-phone"
-          placeholder="Phone (+91XXXXXXXXXX)"
-          required
-        />
-        <input type="email" id="reg-email" placeholder="Email (optional)" />
-        <input
-          type="password"
-          id="reg-password"
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Register</button>
+      <form id="register-form">
+        <h2>Create Account</h2>
+        <div class="input-group">
+          <input type="text" id="reg-name" placeholder="Full Name" required />
+        </div>
+        <div class="input-group">
+          <input
+            type="tel"
+            id="reg-phone"
+            placeholder="Phone (+91XXXXXXXXXX)"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input type="email" id="reg-email" placeholder="Email (optional)" />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="reg-password"
+            placeholder="Create Password"
+            required
+          />
+        </div>
+        <button type="submit" class="submit-btn">Create Account</button>
       </form>
 
       <div id="message"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      // Design-related JavaScript functions for visual enhancements
+
+      // Form toggle functions (keeping your existing function names)
+      function showLogin() {
+        document.getElementById("login-form").classList.add("active");
+        document.getElementById("register-form").classList.remove("active");
+        document.getElementById("login-toggle").classList.add("active");
+        document.getElementById("register-toggle").classList.remove("active");
+
+        // Add smooth transition effect
+        triggerFormTransition();
+      }
+
+      function showRegister() {
+        document.getElementById("register-form").classList.add("active");
+        document.getElementById("login-form").classList.remove("active");
+        document.getElementById("register-toggle").classList.add("active");
+        document.getElementById("login-toggle").classList.remove("active");
+
+        // Add smooth transition effect
+        triggerFormTransition();
+      }
+
+      // Visual transition effect for form switching
+      function triggerFormTransition() {
+        const container = document.querySelector(".container");
+        container.style.transform = "scale(0.98)";
+        setTimeout(() => {
+          container.style.transform = "scale(1)";
+        }, 150);
+      }
+
+      // Enhanced input interactions
+      document.addEventListener("DOMContentLoaded", function () {
+        // Add ripple effect to buttons
+        addRippleEffect();
+
+        // Initialize floating particles
+        createFloatingParticles();
+
+        // Add input focus animations
+        enhanceInputs();
+
+        // Add container entrance animation
+        animateContainerEntrance();
+
+        // Add parallax effect to floating elements
+        addParallaxEffect();
+      });
+
+      // Ripple effect for buttons
+      function addRippleEffect() {
+        const buttons = document.querySelectorAll("button, .submit-btn");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", function (e) {
+            const ripple = document.createElement("span");
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+
+            this.style.position = "relative";
+            this.style.overflow = "hidden";
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+              ripple.remove();
+            }, 600);
+          });
+        });
+
+        // Add ripple animation CSS
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Create floating particles for background
+      function createFloatingParticles() {
+        const particleCount = 6;
+        const colors = ["#667eea", "#764ba2", "#ff6b6b", "#4ecdc4", "#45b7d1"];
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.className = "floating-particle";
+          particle.style.cssText = `
+                    position: fixed;
+                    width: ${Math.random() * 8 + 4}px;
+                    height: ${Math.random() * 8 + 4}px;
+                    background: ${
+                      colors[Math.floor(Math.random() * colors.length)]
+                    };
+                    border-radius: 50%;
+                    opacity: 0.6;
+                    pointer-events: none;
+                    z-index: -1;
+                    left: ${Math.random() * 100}vw;
+                    top: ${Math.random() * 100}vh;
+                    animation: float-particle ${
+                      Math.random() * 10 + 10
+                    }s infinite linear;
+                `;
+          document.body.appendChild(particle);
+        }
+
+        // Add particle animation CSS
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes float-particle {
+                    0% {
+                        transform: translate(0, 100vh) rotate(0deg);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.6;
+                    }
+                    90% {
+                        opacity: 0.6;
+                    }
+                    100% {
+                        transform: translate(0, -100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Enhance input interactions
+      function enhanceInputs() {
+        const inputs = document.querySelectorAll("input");
+
+        inputs.forEach((input) => {
+          // Add focus wave effect
+          input.addEventListener("focus", function () {
+            this.style.animation = "input-focus 0.3s ease forwards";
+          });
+
+          input.addEventListener("blur", function () {
+            this.style.animation = "input-blur 0.3s ease forwards";
+          });
+
+          // Add typing effect
+          input.addEventListener("input", function () {
+            this.style.transform = "scale(1.02)";
+            setTimeout(() => {
+              this.style.transform = "scale(1)";
+            }, 100);
+          });
+        });
+
+        // Add input animation CSS
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes input-focus {
+                    0% { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0); }
+                    100% { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+                }
+                
+                @keyframes input-blur {
+                    0% { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+                    100% { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0); }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Container entrance animation
+      function animateContainerEntrance() {
+        const container = document.querySelector(".container");
+        container.style.opacity = "0";
+        container.style.transform = "translateY(50px) scale(0.9)";
+
+        setTimeout(() => {
+          container.style.transition =
+            "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+          container.style.opacity = "1";
+          container.style.transform = "translateY(0) scale(1)";
+        }, 100);
+      }
+
+      // Parallax effect for floating elements
+      function addParallaxEffect() {
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener("mousemove", (e) => {
+          mouseX = (e.clientX / window.innerWidth) * 100;
+          mouseY = (e.clientY / window.innerHeight) * 100;
+
+          const floatingElements = document.querySelector(".floating-elements");
+          if (floatingElements) {
+            floatingElements.style.transform = `translate(${mouseX * 0.05}px, ${
+              mouseY * 0.05
+            }px)`;
+          }
+
+          // Move container slightly with mouse
+          const container = document.querySelector(".container");
+          container.style.transform = `translate(${mouseX * 0.01}px, ${
+            mouseY * 0.01
+          }px)`;
+        });
+      }
+
+      // Add smooth scroll behavior for mobile
+      function addSmoothScrolling() {
+        document.documentElement.style.scrollBehavior = "smooth";
+      }
+
+      // Initialize smooth scrolling
+      addSmoothScrolling();
+
+      // Add device-specific enhancements
+      if ("ontouchstart" in window) {
+        // Touch device enhancements
+        document.body.classList.add("touch-device");
+
+        // Add touch feedback
+        const style = document.createElement("style");
+        style.textContent = `
+                .touch-device button:active,
+                .touch-device .submit-btn:active {
+                    transform: scale(0.95) !important;
+                    transition: transform 0.1s ease;
+                }
+            `;
+        document.head.appendChild(style);
+      }
+    </script>
   </body>
 </html>

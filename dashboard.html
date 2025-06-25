@@ -2,30 +2,999 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuickDeliver Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #2d3748;
+      }
+
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 1fr;
+      }
+
+      /* Header Section */
+      .header-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b,
+          #ffd93d,
+          #6bcf7f,
+          #4d96ff,
+          #9c88ff
+        );
+        background-size: 300% 100%;
+        animation: gradient 3s ease infinite;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .user-details h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .user-details p {
+        color: #718096;
+        font-size: 0.9rem;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(
+          --accent-color,
+          linear-gradient(90deg, #667eea, #764ba2)
+        );
+      }
+
+      .stat-card.status-card::before {
+        background: var(--status-color, #48bb78);
+      }
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: var(--icon-bg, rgba(102, 126, 234, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 1.5rem;
+      }
+
+      .stat-title {
+        font-size: 0.9rem;
+        color: #718096;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 4px;
+      }
+
+      .stat-change {
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .stat-change.positive {
+        color: #48bb78;
+      }
+
+      .stat-change.negative {
+        color: #f56565;
+      }
+
+      /* Status Section */
+      .status-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .status-controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .status-select {
+        padding: 12px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: white;
+        color: #2d3748;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 150px;
+      }
+
+      .status-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .update-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .update-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-left: 16px;
+      }
+
+      .status-indicator.free {
+        background: rgba(72, 187, 120, 0.1);
+        color: #38a169;
+      }
+
+      .status-indicator.occupied {
+        background: rgba(245, 101, 101, 0.1);
+        color: #e53e3e;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Recent Calls Section */
+      .calls-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .call-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .call-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 16px;
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+      }
+
+      .call-item:hover {
+        background: #edf2f7;
+        transform: translateX(4px);
+      }
+
+      .call-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .call-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(102, 126, 234, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #667eea;
+      }
+
+      .call-details h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .call-details p {
+        font-size: 0.85rem;
+        color: #718096;
+      }
+
+      .call-time {
+        font-size: 0.8rem;
+        color: #a0aec0;
+        font-weight: 500;
+      }
+
+      .call-status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .call-status.completed {
+        background: rgba(72, 187, 120, 0.1);
+        color: #38a169;
+      }
+
+      .call-status.missed {
+        background: rgba(245, 101, 101, 0.1);
+        color: #e53e3e;
+      }
+
+      .call-status.ongoing {
+        background: rgba(66, 153, 225, 0.1);
+        color: #3182ce;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+      }
+
+      .action-btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .logout-btn {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+      }
+
+      .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
+      }
+
+      .secondary-btn {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border: 2px solid #667eea;
+      }
+
+      .secondary-btn:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      /* Loading States */
+      .loading {
+        position: relative;
+        color: transparent !important;
+      }
+
+      .loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Floating Background Elements */
+      .floating-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .floating-elements::before,
+      .floating-elements::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .floating-elements::before {
+        width: 300px;
+        height: 300px;
+        top: 20%;
+        right: 10%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .floating-elements::after {
+        width: 200px;
+        height: 200px;
+        bottom: 20%;
+        left: 10%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-30px) rotate(180deg);
+        }
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .dashboard-container {
+          gap: 16px;
+        }
+
+        .header-card {
+          padding: 24px;
+        }
+
+        .header-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .welcome-section h1 {
+          font-size: 2rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stat-card {
+          padding: 20px;
+        }
+
+        .status-controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .status-select,
+        .update-btn {
+          width: 100%;
+        }
+
+        .call-item {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .action-btn {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-card,
+        .stat-card,
+        .status-section,
+        .calls-section {
+          padding: 16px;
+        }
+
+        .welcome-section h1 {
+          font-size: 1.8rem;
+        }
+
+        .user-avatar {
+          width: 50px;
+          height: 50px;
+          font-size: 1.2rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Dashboard</h1>
-      <div id="user-info"></div>
+    <div class="floating-elements"></div>
 
-      <h2>Status</h2>
-      <select id="status-select">
-        <option value="free">Free</option>
-        <option value="occupied">Occupied</option>
-      </select>
-      <button onclick="updateStatus()">Update Status</button>
+    <div class="dashboard-container">
+      <!-- Header Section -->
+      <div class="header-card">
+        <div class="header-content">
+          <div class="welcome-section">
+            <h1>Dashboard</h1>
+            <p style="color: #718096; font-size: 1.1rem">
+              Welcome back! Here's your delivery overview
+            </p>
+          </div>
+          <div class="user-info" id="user-info">
+            <div class="user-avatar" id="user-avatar">JD</div>
+            <div class="user-details">
+              <h3 id="user-name">John Doe</h3>
+              <p id="user-phone">+91 9876543210</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h2>Recent Calls</h2>
-      <ul id="call-list"></ul>
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="--icon-bg: rgba(72, 187, 120, 0.1); color: #48bb78"
+          >
+            📦
+          </div>
+          <div class="stat-title">Total Orders</div>
+          <div class="stat-value" id="total-orders">0</div>
+          <div class="stat-change positive">+12% from last week</div>
+        </div>
 
-      <button onclick="logout()">Logout</button>
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="--icon-bg: rgba(66, 153, 225, 0.1); color: #4299e1"
+          >
+            🚚
+          </div>
+          <div class="stat-title">Active Deliveries</div>
+          <div class="stat-value" id="active-deliveries">0</div>
+          <div class="stat-change positive">+5 from yesterday</div>
+        </div>
+
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="--icon-bg: rgba(159, 122, 234, 0.1); color: #9f7aea"
+          >
+            ⭐
+          </div>
+          <div class="stat-title">Rating</div>
+          <div class="stat-value" id="user-rating">4.8</div>
+          <div class="stat-change positive">+0.2 this month</div>
+        </div>
+
+        <div class="stat-card status-card" style="--status-color: #48bb78">
+          <div
+            class="stat-icon"
+            style="--icon-bg: rgba(72, 187, 120, 0.1); color: #48bb78"
+          >
+            🟢
+          </div>
+          <div class="stat-title">Current Status</div>
+          <div
+            class="stat-value"
+            style="font-size: 1.5rem; color: #48bb78"
+            id="current-status-display"
+          >
+            Free
+          </div>
+          <div class="status-indicator free" id="status-indicator">
+            <div class="status-dot"></div>
+            Available for orders
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Update Section -->
+      <div class="status-section">
+        <h2 class="section-title">
+          <span style="font-size: 1.5rem">⚡</span>
+          Update Status
+        </h2>
+        <div class="status-controls">
+          <select id="status-select" class="status-select">
+            <option value="free">🟢 Free - Available for orders</option>
+            <option value="occupied">🔴 Occupied - Currently busy</option>
+          </select>
+          <button class="update-btn" onclick="updateStatus()">
+            Update Status
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Calls Section -->
+      <div class="calls-section">
+        <h2 class="section-title">
+          <span style="font-size: 1.5rem">📞</span>
+          Recent Activity
+        </h2>
+        <ul class="call-list" id="call-list">
+          <!-- Sample call items - replace with dynamic content -->
+          <li class="call-item">
+            <div class="call-info">
+              <div class="call-icon">📞</div>
+              <div class="call-details">
+                <h4>Restaurant Order Call</h4>
+                <p>+91 9876543210 • Downtown Restaurant</p>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+              "
+            >
+              <div class="call-status completed">Completed</div>
+              <div class="call-time">2 hours ago</div>
+            </div>
+          </li>
+
+          <li class="call-item">
+            <div class="call-info">
+              <div class="call-icon">📱</div>
+              <div class="call-details">
+                <h4>Customer Inquiry</h4>
+                <p>+91 8765432109 • Order #12345</p>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+              "
+            >
+              <div class="call-status ongoing">Ongoing</div>
+              <div class="call-time">30 min ago</div>
+            </div>
+          </li>
+
+          <li class="call-item">
+            <div class="call-info">
+              <div class="call-icon">❌</div>
+              <div class="call-details">
+                <h4>Missed Call</h4>
+                <p>+91 7654321098 • Unknown</p>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+              "
+            >
+              <div class="call-status missed">Missed</div>
+              <div class="call-time">1 hour ago</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="action-btn secondary-btn">📊 View Reports</button>
+        <button class="action-btn secondary-btn">⚙️ Settings</button>
+        <button class="action-btn logout-btn" onclick="logout()">
+          🚪 Logout
+        </button>
+      </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
-      loadDashboard();
+      // Design-related JavaScript for dashboard interactions
+
+      // Initialize dashboard animations
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeDashboard();
+        loadDashboard(); // Your existing function call
+      });
+
+      function initializeDashboard() {
+        // Animate cards on load
+        animateCardsEntrance();
+
+        // Add interactive effects
+        addCardHoverEffects();
+        addButtonRippleEffects();
+        addParallaxEffect();
+
+        // Initialize status animations
+        updateStatusDisplay();
+
+        // Add loading animations for async operations
+        setupLoadingStates();
+
+        // Mobile touch enhancements
+        if ("ontouchstart" in window) {
+          addTouchEnhancements();
+        }
+      }
+
+      // Card entrance animations
+      function animateCardsEntrance() {
+        const cards = document.querySelectorAll(
+          ".header-card, .stat-card, .status-section, .calls-section"
+        );
+
+        cards.forEach((card, index) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(30px)";
+
+          setTimeout(() => {
+            card.style.transition =
+              "all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, index * 150);
+        });
+      }
+
+      // Enhanced hover effects for cards
+      function addCardHoverEffects() {
+        const statCards = document.querySelectorAll(".stat-card");
+
+        statCards.forEach((card) => {
+          card.addEventListener("mouseenter", function () {
+            this.style.transform = "translateY(-8px) scale(1.02)";
+          });
+
+          card.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0) scale(1)";
+          });
+        });
+      }
+
+      // Ripple effects for buttons
+      function addButtonRippleEffects() {
+        const buttons = document.querySelectorAll("button, .action-btn");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", function (e) {
+            const ripple = document.createElement("span");
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+
+            this.style.position = "relative";
+            this.style.overflow = "hidden";
+            this.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+          });
+        });
+
+        // Add ripple CSS
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Status update with animations
+      function updateStatus() {
+        const select = document.getElementById("status-select");
+        const updateBtn = document.querySelector(".update-btn");
+        const statusCard = document.querySelector(".status-card");
+
+        // Loading state
+        updateBtn.classList.add("loading");
+
+        setTimeout(() => {
+          updateBtn.classList.remove("loading");
+          updateStatusDisplay();
+
+          // Flash effect for status card
+          statusCard.style.animation = "flash 0.5s ease";
+          setTimeout(() => {
+            statusCard.style.animation = "";
+          }, 500);
+
+          // Show success feedback
+          showNotification("Status updated successfully!", "success");
+        }, 1000);
+
+        // Add flash animation CSS
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes flash {
+                    0%, 100% { background: rgba(255, 255, 255, 0.95); }
+                    50% { background: rgba(102, 126, 234, 0.1); }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Update status display
+      function updateStatusDisplay() {
+        const select = document.getElementById("status-select");
+        const statusDisplay = document.getElementById("current-status-display");
+        const statusIndicator = document.getElementById("status-indicator");
+        const statusCard = document.querySelector(".status-card");
+
+        const value = select.value;
+        const isFree = value === "free";
+
+        statusDisplay.textContent = isFree ? "Free" : "Occupied";
+        statusDisplay.style.color = isFree ? "#48bb78" : "#f56565";
+
+        statusIndicator.className = `status-indicator ${value}`;
+        statusIndicator.innerHTML = `
+                <div class="status-dot"></div>
+                ${isFree ? "Available for orders" : "Currently busy"}
+            `;
+
+        statusCard.style.setProperty(
+          "--status-color",
+          isFree ? "#48bb78" : "#f56565"
+        );
+      }
+
+      // Notification system
+      function showNotification(message, type = "info") {
+        const notification = document.createElement("div");
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 12px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+                background: ${
+                  type === "success"
+                    ? "linear-gradient(135deg, #48bb78, #38a169)"
+                    : "linear-gradient(135deg, #4299e1, #3182ce)"
+                };
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            `;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 3000);
+
+        // Add slide animations
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+        document.head.appendChild(style);
+      }
+
+      // Parallax effect for floating elements
+      function addParallaxEffect() {
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener("mousemove", (e) => {
+          mouseX = (e.clientX / window.innerWidth) * 100;
+          mouseY = (e.clientY / window.innerHeight) * 100;
+
+          const floatingElements = document.querySelector(".floating-elements");
+          if (floatingElements) {
+            floatingElements.style.transform = `translate(${mouseX * 0.02}px, ${
+              mouseY * 0.02
+            }px)`;
+          }
+        });
+      }
     </script>
   </body>
 </html>
