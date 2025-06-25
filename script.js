@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:5000/api"; // replace with your Flask backend domain when deployed
+const API = "https://server-19j6.onrender.com/api"; // replace with your Flask backend domain when deployed
 
 // Toggle forms
 function showLogin() {
